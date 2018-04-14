@@ -9,6 +9,7 @@ node {
         stage('Checkout') {
             deleteDir()
             checkout scm
+            sh "chmod +x infrastructure/*"
             // env.PATH = "${env.PATH}:${tool 'Maven 3.5.0'}/bin"
         }
 
