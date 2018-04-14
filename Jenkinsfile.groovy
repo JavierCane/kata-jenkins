@@ -51,7 +51,7 @@ node {
 
         stage('Deploy') {
             withCredentials([file(credentialsId: 'GCLOUD_AUTH', variable: 'GCLOUD_AUTH')]) {
-                docker.image("google/cloud-sdk:196.0.0").inside {
+                docker.build("my-gcloud:1.0.0", ". -f kubernetes/Dockerfile").inside {
                     sh """
                         export GCLOUD_AUTH=${GCLOUD_AUTH}
                         export APP_NAME=${APP_NAME}
