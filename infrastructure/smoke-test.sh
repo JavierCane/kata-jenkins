@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 
-set -e
-
+: ${GCLOUD_AUTH:?"Need to set GCLOUD_AUTH variable"}
 : ${APP_NAME:?"Need to set APP_NAME variable"}
 : ${PORT:?"Need to set PORT variable"}
+
+gcloud auth activate-service-account --key-file ${GCLOUD_AUTH}
 
 IP=$(kubectl get service -o json | jq -r '.items[] | select(.metadata.name==env.APP_NAME) | .status.loadBalancer.ingress[0].ip')
 

@@ -50,19 +50,23 @@ node {
         }
 
         stage('Deploy') {
-            docker.image("google/cloud-sdk:196.0.0").inside {
-                sh """
-                    export APP_NAME=${APP_NAME}
-                    export VERSION=${VERSION}
-                    export PORT=${PORT}
-                    ./infrastructure/deploy.sh
-                """
+            withCredentials([file(credentialsId: 'GCLOUD_AUTH', variable: 'GCLOUD_AUTH')]) {
+                docker.image("google/cloud-sdk:196.0.0").inside {
+                    sh """
+                        export GCLOUD_AUTH=${GCLOUD_AUTH}
+                        export APP_NAME=${APP_NAME}
+                        export VERSION=${VERSION}
+                        export PORT=${PORT}
+                        ./infrastructure/deploy.sh
+                    """
 
-                sh """
-                   export APP_NAME=${APP_NAME}
-                   export PORT=${PORT}
-                    ./infrastructure/smoke-test.sh
-                """
+                    sh """
+                        export GCLOUD_AUTH=${GCLOUD_AUTH}
+                        export APP_NAME=${APP_NAME}
+                        export PORT=${PORT}
+                        ./infrastructure/smoke-test.sh
+                    """
+                }
             }
         }
 
