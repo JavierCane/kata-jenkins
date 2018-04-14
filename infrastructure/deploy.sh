@@ -7,7 +7,7 @@
 
 gcloud auth activate-service-account --key-file ${GCLOUD_AUTH}
 
-cat stack.yaml | \
+cat infrastructure/stack.yaml | \
 sed 's/\$VERSION'"/${VERSION}/g" | \
 sed 's/\$APP_NAME'"/${APP_NAME}/g" | \
 sed 's/\$PORT'"/${PORT}/g" | \
