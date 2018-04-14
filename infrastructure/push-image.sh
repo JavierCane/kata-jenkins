@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-: ${REPOSITORY_KEY:?"Need to set REPOSITORY_KEY variable"}
+: ${GCLOUD_AUTH:?"Need to set GCLOUD_AUTH variable"}
 : ${APP_NAME:?"Need to set APP_NAME variable"}
 : ${VERSION:?"Need to set VERSION variable"}
 
-docker login -u oauth2accesstoken -p ${REPOSITORY_KEY} https://gcr.io
+gcloud auth activate-service-account --key-file ${GCLOUD_AUTH}
 gcloud docker -- push gcr.io/kubernetes-kata/${APP_NAME}:${VERSION}
