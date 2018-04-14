@@ -37,12 +37,15 @@ node {
         }
 
         stage('Upload image') {
-            docker.image("google/cloud-sdk:196.0.0").inside {
-                sh """
+            withCredentials([string(credentialsId: 'REPOSITORY_KEY', variable: 'REPOSITORY_KEY')]) {
+                docker.image("google/cloud-sdk:196.0.0").inside {
+                    sh """
+                    export REPOSITORY_KEY=${REPOSITORY_KEY}
                     export APP_NAME=${APP_NAME}
                     export VERSION=${VERSION}
                     ./infrastructure/push-image.sh
                 """
+                }
             }
         }
 

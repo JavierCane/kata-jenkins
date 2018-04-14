@@ -3,7 +3,6 @@
 set -e
 
 : ${APP_NAME:?"Need to set APP_NAME variable"}
-# : ${VERSION:?"Need to set VERSION variable"}
 : ${PORT:?"Need to set PORT variable"}
 
 IP=$(kubectl get service -o json | jq -r '.items[] | select(.metadata.name==env.APP_NAME) | .status.loadBalancer.ingress[0].ip')
