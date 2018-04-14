@@ -32,7 +32,7 @@ node {
             sh """
                 export APP_NAME=${APP_NAME}
                 export VERSION=${VERSION}
-                ./infrastructure/build-image.sh"
+                ./infrastructure/build-image.sh
             """
         }
 
@@ -41,7 +41,7 @@ node {
                 sh """
                     export APP_NAME=${APP_NAME}
                     export VERSION=${VERSION}
-                    ./infrastructure/push-image.sh"
+                    ./infrastructure/push-image.sh
                 """
             }
         }
@@ -58,7 +58,7 @@ node {
                 sh """
                    export APP_NAME=${APP_NAME}
                    export PORT=${PORT}
-                    ./infrastructure/smoke-test.sh"
+                    ./infrastructure/smoke-test.sh
                 """
             }
         }
