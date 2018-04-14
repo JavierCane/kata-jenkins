@@ -37,7 +37,7 @@ node {
         }
 
         stage('Upload image') {
-            withCredentials([string(credentialsId: 'GCLOUD_AUTH', variable: 'GCLOUD_AUTH')]) {
+            withCredentials([file(credentialsId: 'GCLOUD_AUTH', variable: 'GCLOUD_AUTH')]) {
                 docker.image("google/cloud-sdk:196.0.0").inside {
                     sh """
                         export GCLOUD_AUTH=${GCLOUD_AUTH}
