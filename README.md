@@ -1,15 +1,23 @@
 # Jenkins Kata
+- If you enjoyed this kata you can continue with the [Second part](https://github.com/Marcut-Laurentiu/kata-jenkins-part-2.git).
 
 ## Requirements
-- Install [Docker](https://docs.docker.com/engine/installation/#supported-platforms).
+##### Install [Docker](https://docs.docker.com/engine/installation/#supported-platforms)
 
 ##### Run Jenkins
 ```
-$ docker run \
+$ # Run inside docker container
+$ docker run --rm -d \
 	-p 8080:8080 \
-	-p 50000:50000 \
 	-v jenkins_home:/var/jenkins_home \
+	--name my-jenkins
 	jenkins/jenkins:lts
+	
+$ # Get the admin password
+$ docker exec -it my-jenkins cat /var/jenkins_home/secrets/initialAdminPassword
+
+$ # Stop Jenkins
+$ docker kill my-jenkins
 ```
 
 ##### Install Jenkins Plugins
@@ -18,52 +26,45 @@ $ docker run \
 - Pipeline: AWS Steps.
 - Slack Notification Plugin.
 
-##### Slack channel for notifications
-- **#kata_jenkins**
+##### Slack account for notifications
+- Notifications channel **#jenkins**.
 
-##### AWS S3 bucket for uploads
-- **kata_jenkins/my-team-name**
+##### AWS account for artifact uploads
+- S3 bucket **pipeline_kata/my-team-name**.
+
+##### Fork this repository
 
 ## Kata steps:
 1. Create a pipeline job. You can use the Scripted or Declarative Pipeline.
-2. Create a new step inside the pipeline and download the source code from this repository (master branch).
-3. Create a new step and build the project. You can use the following command:
+2. Download the source code from the forked repository (master branch).
+3. Build the project and launch the unit tests. You can use the following command:
     ```
     $ mvn clean package
     ```
-   You need to install **Maven 3.5.0** or newer on **Global Tools Configuration**.
-4. Publish on Jenkins your test results using the **junit** step.
-   Capture the JAR builded from the **/target** directory and save it to Jenkins for later retrieval. You can use the **archive** step. 
-5. Upload the JAR artifact to AWS S3. 
-   You need to create a new **User with Password Credentials** to store your AWS public and private keys.
-   The **Pipeline: AWS Steps Plugin** can be your friend here.<br />
+   Hint: you need to install **Maven 3.5.0** or newer.
+4. Publish on Jenkins your test results using the **junit** step. <br />
+   Get the build result (JAR) from the **/target** directory and save it in Jenkins for later retrieval. 
+   You can use the **archive** step. 
+5. Upload the JAR to AWS S3 bucket (create a directory with you team name).
+   Take care how you store your credentials. <br />
    Hint: you need AWS credentials for this step.
-6. Send Slack notification on **#kata_jenkins** channel using the **Slack Notification Plugin**.
-   You can send any information like job name, build number etc...<br />
-   Hint: you need the Slack URL and token for this step.
-7. Send Slack notification in case of error. You can add the exception to the message body.
-8. Pipeline as code. Move the pipeline code in a Jenkinsfile and push it to the same repository.
-   Pool the repository to detect any commit changes and start the build withouth manual steps.<br />
-   Hint: you need to fork this repository or mount the $HOME folder as volume to the Jenkins container with '-v' option.
+6. Send Slack notification in case of successful or failed execution.
+   You can send any information like job name, build number, message color etc...<br />
+   Hint: you need the Slack URL and a token for this step.
+7. Pipeline as code. Move the pipeline code in a **Jenkinsfile** and push it to the same repository.
+   Pool the repository to detect any commit changes and start the build without manual steps.
    
-## Utils
-##### Jenkins Documentation
-https://jenkins.io/doc/
+## Documentation
+- [Jenkins Documentation](https://jenkins.io/doc/)
 
-##### Jenkins Pipeline
-https://jenkins.io/doc/book/pipeline/
+- [Jenkins Pipeline](https://jenkins.io/doc/book/pipeline/)
 
-##### Jenkinsfile
-https://jenkins.io/doc/book/pipeline/jenkinsfile/
+- [Jenkinsfile](https://jenkins.io/doc/book/pipeline/jenkinsfile/)
 
-##### Jenkins Plugins
-https://jenkins.io/doc/book/managing/plugins/
+- [Jenkins Plugins](https://jenkins.io/doc/book/managing/plugins/)
 
-##### Jenkins Blue Ocean
-https://jenkins.io/doc/book/blueocean/
+- [Jenkins Blue Ocean](https://jenkins.io/doc/book/blueocean/)
 
-##### Pipeline: AWS Steps
-https://github.com/jenkinsci/pipeline-aws-plugin
+- [Pipeline: AWS Steps](https://github.com/jenkinsci/pipeline-aws-plugin)
 
-##### Slack Notification Plugin
-https://github.com/jenkinsci/slack-plugin
+- [Slack Notification Plugin](https://github.com/jenkinsci/slack-plugin)
