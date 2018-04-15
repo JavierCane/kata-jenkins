@@ -2,7 +2,7 @@
 
 node {
 
-    var SLACK_URL = "https://your-slack-account.slack.com/services/hooks/jenkins-ci/"
+    def SLACK_URL = "https://your-slack-account.slack.com/services/hooks/jenkins-ci/"
 
     try {
         stage('Initialisation') {
@@ -12,7 +12,7 @@ node {
         }
 
         stage('Build and launch tests') {
-            var version = "v-${env.BUILD_NUMBER}"
+            def version = "v-${env.BUILD_NUMBER}"
             sh "mvn clean package -Drevision=$version"
         }
 
