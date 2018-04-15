@@ -22,8 +22,8 @@ node {
         }
 
         stage('Upload to S3 repository') {
-            withAWS(region: 'eu-west-1', credentials: 'AWS_CREDENTIALS') {
-                s3Upload(bucket: "kata-jenkins",
+            withAWS(region: 'eu-west-3', credentials: 'AWS_CREDENTIALS') {
+                s3Upload(bucket: "pipeline-kata",
                         path: "my-name/kata-jenkins.jar",
                         includePathPattern: 'target/*.jar'
                 )
