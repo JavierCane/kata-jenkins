@@ -13,7 +13,7 @@ pipeline {
     stages {
         stage('Build and launch tests') {
             steps {
-                sh "mvn clean package -Drevision=v-${env.BUILD_NUMBER} -DskipTests"
+                sh "mvn clean package -Drevision=v-${env.BUILD_NUMBER}"
             }
         }
 
