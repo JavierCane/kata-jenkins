@@ -2,26 +2,26 @@
 
 node {
 
-    String SLACK_URL = "https://your-slack-account.slack.com/services/hooks/jenkins-ci/"
-    String SLACK_CHANNEL = "#kata_jenkins"
+    var SLACK_URL = "https://your-slack-account.slack.com/services/hooks/jenkins-ci/"
 
     try {
-        stage('Preparation') {
+        stage('Initialisation') {
             deleteDir()
             checkout scm
             env.PATH = "${env.PATH}:${tool 'Maven 3.5.0'}/bin"
         }
 
-        stage('Build') {
-            sh "mvn clean package"
+        stage('Build and launch tests') {
+            var version = "v-${env.BUILD_NUMBER}"
+            sh "mvn clean package -Drevision=$version"
         }
 
-        stage('Results') {
+        stage('Publish results') {
             junit '**/target/surefire-reports/TEST-*.xml'
             archive 'target/*.jar'
         }
 
-        stage('Upload to S3') {
+        stage('Upload to S3 repository') {
             withAWS(region: 'eu-west-1', credentials: 'AWS_CREDENTIALS') {
                 s3Upload(bucket: "kata-jenkins",
                         path: "my-name/kata-jenkins.jar",
@@ -31,27 +31,24 @@ node {
         }
 
         stage('Notification') {
-            withCredentials([string(credentialsId: 'SLACK_TOKEN', variable: 'SLACK_TOKEN')]) {
-                slackSend baseUrl: SLACK_URL,
-                        token: SLACK_TOKEN,
-                        channel: SLACK_CHANNEL,
-                        color: '#00FF00',
-                        message: """
+            slackSend baseUrl: SLACK_URL,
+                    tokenCredentialId: "SLACK_TOKEN",
+                    channel: "#general",
+                    color: '#00FF00',
+                    message: """
                         SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'
                     """
-            }
         }
     } catch (e) {
-        withCredentials([string(credentialsId: 'SLACK_TOKEN', variable: 'SLACK_TOKEN')]) {
-            slackSend baseUrl: SLACK_URL,
-                    token: SLACK_TOKEN,
-                    channel: SLACK_CHANNEL,
-                    color: '#FF0000',
-                    message: """
+        slackSend baseUrl: SLACK_URL,
+                tokenCredentialId: "SLACK_TOKEN",
+                channel: "#general",
+                color: '#FF0000',
+                message: """
                     FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'\n
                     Error: $e
                 """
-        }
+
         currentBuild.result = "FAILED"
         throw e
     }
