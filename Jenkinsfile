@@ -1,6 +1,5 @@
 node {
     def mvnHome
-
     stage('Preparation') { // for display purposes
         // Get some code from a GitHub repository
         git 'https://github.com/JavierCane/kata-jenkins.git'
@@ -15,5 +14,10 @@ node {
     stage('Results') {
         junit '**/target/surefire-reports/TEST-*.xml'
         archive 'target/*.jar'
+    }
+    stage('Upload result') {
+        withAWS(region:'eu-west-3', credentials:'aws_key') {
+            s3Upload(file:"target/kata-jenkins-${BUILD_NUMBER}.jar", bucket:'pipeline-kata', path:"alejandroNjavi/target/kata-jenkins-${BUILD_NUMBER}.jar")
+        }
     }
 }
